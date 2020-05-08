@@ -20,10 +20,11 @@ gritar persona = UnaPersona("AHHHH" ++ nombre persona) (cantidadDeDinero persona
 tieneLaTactica :: Persona -> Bool
 tieneLaTactica persona = tacticaDeJuego persona == "Oferente singular" || tacticaDeJuego persona == "Accionista" 
 
-subastar :: Persona -> Propiedad -> Persona
-subastar persona propiedad | (tieneLaTactica persona == True) = UnaPersona (nombre persona) (cantidadDeDinero persona - precio propiedad)                                                                                                          (tacticaDeJuego persona) (propiedadesCompradas persona ++ [propiedad]) (acciones persona)
+                         
+subastar :: Propiedad -> Accion
+subastar propiedad persona | (tieneLaTactica persona == True) = UnaPersona (nombre persona) (cantidadDeDinero persona - precio propiedad)                                                                                                          (tacticaDeJuego persona) (propiedadesCompradas persona ++ [propiedad]) (acciones persona)
                            | otherwise = persona
-
+                           
 ---------------------------------
 esPropiedadBarata :: Propiedad -> Bool
 esPropiedadBarata propiedad = (>) 150 (precio propiedad)
