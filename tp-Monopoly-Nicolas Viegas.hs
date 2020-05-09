@@ -6,25 +6,21 @@ import Data.List (genericLength)
 
 
 pasarPorElBanco :: Accion
-pasarPorElBanco persona = UnaPersona (nombre persona) (cantidadDeDinero persona+40) "Comprador compulsivo" (propiedadesCompradas persona) (acciones persona)
-
+pasarPorElBanco persona = persona {cantidadDeDinero = cantidadDeDinero persona+40, tacticaDeJuego = "Comprador compulsivo"}
 ------
 enojarse :: Accion
-enojarse persona = UnaPersona (nombre persona) (cantidadDeDinero persona+50) (tacticaDeJuego persona) (propiedadesCompradas persona) ([gritar]++(acciones persona))
-
+enojarse persona = persona {cantidadDeDinero = cantidadDeDinero persona+50, acciones = [gritar]++acciones persona}
 ------
 gritar :: Accion
-gritar persona = UnaPersona("AHHHH" ++ nombre persona) (cantidadDeDinero persona) (tacticaDeJuego persona) (propiedadesCompradas persona) (acciones persona)
-
+gritar persona = persona {nombre = "AHHH"++ nombre persona}
 -----
 tieneLaTactica :: Persona -> Bool
 tieneLaTactica persona = tacticaDeJuego persona == "Oferente singular" || tacticaDeJuego persona == "Accionista" 
 
                          
 subastar :: Propiedad -> Accion
-subastar propiedad persona | (tieneLaTactica persona == True) = UnaPersona (nombre persona) (cantidadDeDinero persona - precio propiedad)                                                                                                          (tacticaDeJuego persona) (propiedadesCompradas persona ++ [propiedad]) (acciones persona)
-                           | otherwise = persona
-                           
+subastar propiedad persona | (tieneLaTactica persona == True) = (persona {cantidadDeDinero = cantidadDeDinero persona - precio propiedad, propiedadesCompradas =  propiedadesCompradas persona ++ [propiedad]})
+                           | otherwise = persona                        
 ---------------------------------
 esPropiedadBarata :: Propiedad -> Bool
 esPropiedadBarata propiedad = (>) 150 (precio propiedad)
@@ -36,17 +32,17 @@ plataDelAlquiler :: Persona -> Int
 plataDelAlquiler persona = ((cantPropiedadesSegun persona esPropiedadBarata)*10) + ((cantPropiedadesSegun persona (not.esPropiedadBarata)*20))
 
 cobrarAlquiler :: Accion 
-cobrarAlquiler persona = UnaPersona (nombre persona) (cantidadDeDinero persona + plataDelAlquiler persona) (tacticaDeJuego persona) (propiedadesCompradas persona) (acciones persona)
-
+cobrarAlquiler persona = persona {cantidadDeDinero = cantidadDeDinero persona + plataDelAlquiler persona }
 ----------------------------
 esAccionista :: Persona -> Bool
 esAccionista persona = tacticaDeJuego persona == "Accionista"
 
 pagarAAccionistas :: Accion
-pagarAAccionistas persona | (esAccionista persona == True) = UnaPersona (nombre persona) (cantidadDeDinero persona + 200) (tacticaDeJuego persona) (propiedadesCompradas persona) (acciones persona)
-                          | otherwise = UnaPersona (nombre persona) (cantidadDeDinero persona - 100) (tacticaDeJuego persona) (propiedadesCompradas persona) (acciones persona)
-
---------------------------------------------------------
+pagarAAccionistas persona | (esAccionista persona == True) = (persona {cantidadDeDinero = cantidadDeDinero persona + 200})
+                          | otherwise = persona{cantidadDeDinero = cantidadDeDinero persona - 100}
+                          
+                    
+---------------------------
 --PUNTO 3 
 
 
@@ -87,5 +83,4 @@ manuel = UnaPersona {
     acciones = [pasarPorElBanco,enojarse]
 }
 
-
-
+---------------------------
